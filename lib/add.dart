@@ -117,10 +117,11 @@ class AddPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.only(left: 18, top: 0),
+                            padding: EdgeInsets.only(left: 0),
                             child: Container(
                               height: 520,
                               child: ListView.separated(
+                                padding: EdgeInsets.only(top: 0),
                                 separatorBuilder: (context, index) => const ColoredBox(
                                   child: SizedBox(
                                     width: 400,
@@ -131,10 +132,21 @@ class AddPage extends StatelessWidget {
                                 scrollDirection: Axis.vertical,
                                 itemCount: categories.length,
                                 itemBuilder: (context, index) {
-                                  return _buildCategoryItem(context, categories[index]);
+                                  return Padding(
+                                      padding: EdgeInsets.only(left: 18),
+                                  child:
+                                  _buildCategoryItem(context, categories[index]),
+                                  );
                                 },
                               ),
                             )
+                        ),
+                        ColoredBox(
+                          child: SizedBox(
+                            width: 400,
+                            height: 1,
+                          ),
+                          color: Color.fromARGB(192, 192, 192, 192),
                         ),
                         // Остальной код
                       ],
@@ -276,7 +288,7 @@ class AddPage extends StatelessWidget {
         child: Row(
           children: [
             Icon(category.icon),
-            SizedBox(width: 8),
+            SizedBox(width: 10),
             Text(category.name),
           ],
         ),

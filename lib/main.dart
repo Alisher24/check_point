@@ -335,6 +335,7 @@ class MainPage extends StatelessWidget {
                               children: [
                                 // Ваши блоки с чеками
                                 ListView.builder(
+                                  padding: EdgeInsets.only(top: 0),
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: checkitem.length,
