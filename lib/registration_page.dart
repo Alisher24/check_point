@@ -36,71 +36,166 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Регистрация'),
-        centerTitle: true, // Центрирование заголовка
-        titleSpacing: 0, // Отступ сверху для заголовка
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _loginController,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(color: Colors.blue),
-              decoration: const InputDecoration(
-                labelText: 'Логин',
-                hintText: 'Введите логин',
-                prefixIcon: Icon(Icons.person, color: Colors.blue),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
+      body: SingleChildScrollView(
+        child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            Positioned(
+              child: Container(
+                width: 415,
+                height: 210,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(110),
+                    bottomRight: Radius.circular(110),
+                  ),
+                  shape: BoxShape.rectangle,
+                  color: Colors.green[500],
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Ограничение на цифры
-                LengthLimitingTextInputFormatter(4), // Ограничение на 4 символа
-              ],
-              style: const TextStyle(color: Colors.red),
-              decoration: const InputDecoration(
-                labelText: 'Пароль',
-                hintText: 'Введите пароль',
-                prefixIcon: Icon(Icons.lock, color: Colors.red),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Регистрация',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                _registerUser(context);
-              },
-              child: Text('Зарегистрироваться'),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 210,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(110),
+                    topRight: Radius.circular(110),
+                  ),
+                  shape: BoxShape.rectangle,
+                  color: Colors.green[500],
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
+            Positioned(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        controller: _loginController,
+                        keyboardType: TextInputType.text,
+                        style: const TextStyle(color: Colors.blue),
+                        decoration: const InputDecoration(
+                          labelText: 'Логин',
+                          hintText: 'Введите логин',
+                          prefixIcon: Icon(Icons.person, color: Colors.blue),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _passwordController,
+                        keyboardType: TextInputType.text,
+                        inputFormatters: [
+                        ],
+                        style: const TextStyle(color: Colors.red),
+                        decoration: const InputDecoration(
+                          labelText: 'Пароль',
+                          hintText: 'Введите пароль',
+                          prefixIcon: Icon(Icons.lock, color: Colors.red),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          _registerUser(context);
+                        },
+                        child: Text('Зарегистрироваться'),
+                      ),
+                    ],
+                  ),
+                ),
             ),
           ],
         ),
       ),
+      ),
     );
+    //   body: Padding(
+    //     padding: const EdgeInsets.all(16.0),
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: <Widget>[
+    //         TextField(
+    //           controller: _loginController,
+    //           keyboardType: TextInputType.text,
+    //           style: const TextStyle(color: Colors.blue),
+    //           decoration: const InputDecoration(
+    //             labelText: 'Логин',
+    //             hintText: 'Введите логин',
+    //             prefixIcon: Icon(Icons.person, color: Colors.blue),
+    //             enabledBorder: OutlineInputBorder(
+    //               borderSide: BorderSide(color: Colors.blue),
+    //             ),
+    //             focusedBorder: OutlineInputBorder(
+    //               borderSide: BorderSide(color: Colors.blue),
+    //             ),
+    //           ),
+    //         ),
+    //         const SizedBox(height: 16),
+    //         TextField(
+    //           controller: _passwordController,
+    //           keyboardType: TextInputType.text,
+    //           inputFormatters: [
+    //           ],
+    //           style: const TextStyle(color: Colors.red),
+    //           decoration: const InputDecoration(
+    //             labelText: 'Пароль',
+    //             hintText: 'Введите пароль',
+    //             prefixIcon: Icon(Icons.lock, color: Colors.red),
+    //             enabledBorder: OutlineInputBorder(
+    //               borderSide: BorderSide(color: Colors.red),
+    //             ),
+    //             focusedBorder: OutlineInputBorder(
+    //               borderSide: BorderSide(color: Colors.red),
+    //             ),
+    //           ),
+    //         ),
+    //         const SizedBox(height: 16),
+    //         ElevatedButton(
+    //           onPressed: () {
+    //             _registerUser(context);
+    //           },
+    //           child: Text('Зарегистрироваться'),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   void _registerUser(BuildContext context) async {
     String login = _loginController.text;
     String password = _passwordController.text;
 
-    if (login.isNotEmpty && _isNumeric(password)) {
+    if (login.isNotEmpty && password.isNotEmpty) {
       bool userExists = await _checkUserExists(login);
       if (!userExists) {
         await _saveUserCredentials(login, password);

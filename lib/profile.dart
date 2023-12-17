@@ -7,18 +7,13 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 42,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       body: Stack(
         children: [
           // Большой круг на заднем фоне
           Positioned(
             child: Container(
               width: 415,
-              height: 210,
+              height: 260,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(110),
@@ -35,7 +30,7 @@ class ProfilePage extends StatelessWidget {
             right: 38, // 20 пикселей от правого края
             top: 120,
             child: Container(
-              height: 600,
+              height: 700,
               decoration: BoxDecoration(
                 color: Colors.green[500],
                 borderRadius: BorderRadius.circular(15),
@@ -43,11 +38,11 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 80),
             child: Column(
               children: [
                 Container(
-                  width: 300,
+                  width: 320,
                   height: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -66,7 +61,7 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 10),
                 Container(
                   width: 320,
-                  height: 600,
+                  height: 646,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
@@ -74,12 +69,12 @@ class ProfilePage extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 20),
-                      _buildUserInfoRow('Фамилия', 'Гиль'),
-                      _buildUserInfoRow('Имя', 'Иван'),
-                      _buildUserInfoRow('Отчество', 'Владимирович'),
-                      _buildUserInfoRow('Почта', 'evan.gil@list.ru'),
-                      _buildUserInfoRow('Дата рождения', '10.02.2004'),
-                      _buildUserInfoRow('Пароль', '****'),
+                      _buildUserInfoRow('Фамилия', ''),
+                      _buildUserInfoRow('Имя', ''),
+                      _buildUserInfoRow('Отчество', ''),
+                      _buildUserInfoRow('Почта', ''),
+                      _buildUserInfoRow('Дата рождения', ''),
+                      _buildUserInfoRow('Пароль', ''),
                       ElevatedButton(
                         onPressed: () {
                           // Добавьте обработчик нажатия для кнопки "Изменить"
@@ -124,7 +119,6 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -148,7 +142,7 @@ class ProfilePage extends StatelessWidget {
                             MaterialPageRoute(builder: (context) => MainPage()),
                         );
                       }),
-                      _buildBottomBarButton(Icons.add, 'Добавить', () {
+                      _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => AddPage()),

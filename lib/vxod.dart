@@ -35,6 +35,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _pinController = TextEditingController();
+  FocusNode _pinFocusNode = FocusNode();
   Database? _database;
 
   @override
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool> _checkUserCredentials(String login, String password) async {
-    if (login.isNotEmpty && _isNumeric(password)) {
+    if (login.isNotEmpty && password.isNotEmpty) {
       bool userExists = await _checkUserExists(login);
 
       if (userExists) {
@@ -110,90 +111,140 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 140,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 90, top: 110),
-          child: Text('Добро пожаловать!'),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _phoneController,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(color: Colors.blue),
-              decoration: const InputDecoration(
-                labelText: 'Логин',
-                hintText: 'Введите логин',
-                prefixIcon: Icon(Icons.person, color: Colors.blue),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _pinController,
-              keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly, // Ограничение на цифры
-                  LengthLimitingTextInputFormatter(4), // Ограничение на 4 символа
-                ],
-              obscureText: true,
-              style: const TextStyle(color: Colors.red),
-              decoration: const InputDecoration(
-                labelText: 'Пароль',
-                hintText: 'Введите пароль',
-                prefixIcon: Icon(Icons.lock, color: Colors.red),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Positioned(
+                child: Container(
+                  width: 415,
+                  height: 210,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(110),
+                      bottomRight: Radius.circular(110),
+                    ),
+                    shape: BoxShape.rectangle,
+                    color: Colors.green[500],
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Добро пожаловать!',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                String phone = _phoneController.text;
-                String pin = _pinController.text;
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 210,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(110),
+                      topRight: Radius.circular(110),
+                    ),
+                    shape: BoxShape.rectangle,
+                    color: Colors.green[500],
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                  ),
+                ),
+              ),
+              Positioned(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.text,
+                        style: const TextStyle(color: Colors.blue),
+                        decoration: const InputDecoration(
+                          labelText: 'Логин',
+                          hintText: 'Введите логин',
+                          prefixIcon: Icon(Icons.person, color: Colors.blue),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _pinController,
+                        focusNode: _pinFocusNode,
+                        keyboardType: TextInputType.text,
+                        inputFormatters: [ // Ограничение на 4 символа
+                        ],
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.red),
+                        decoration: const InputDecoration(
+                          labelText: 'Пароль',
+                          hintText: 'Введите пароль',
+                          prefixIcon: Icon(Icons.lock, color: Colors.red),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            String phone = _phoneController.text;
+                            String pin = _pinController.text;
 
-                if (phone.isNotEmpty && pin.length == 4) {
-                  bool isAuthenticated = await _checkUserCredentials(phone, pin);
+                            if (phone.isNotEmpty && pin.isNotEmpty) {
+                              bool isAuthenticated = await _checkUserCredentials(phone, pin);
 
-                  if (isAuthenticated) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
-                  } else {
-                    _showLoginFailed(context);
-                  }
-                } else {
-                  print("Пожалуйста, введите корректные данные");
-                }
-              },
-              child: Text('Войти'),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegistrationPage()),
-                );
-              },
-              child: const Text('Нет аккаунта?'),
-            ),
-          ],
+                              if (isAuthenticated) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                                );
+                              } else {
+                                _showLoginFailed(context);
+                              }
+                            } else {
+                              print("Пожалуйста, введите корректные данные");
+                            }
+                          },
+                          child: const Text('Войти'),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RegistrationPage()),
+                            );
+                          },
+                          child: const Text('Нет аккаунта?'),
+                        ),
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

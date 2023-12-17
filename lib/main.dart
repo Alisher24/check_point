@@ -85,23 +85,50 @@ class MainPage extends StatelessWidget {
           ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
           ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
         ]),
+    CheckItem(
+        date: '21:02 23.11',
+        storeName: 'Командор',
+        amount: 1500.00,
+        products: [
+          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+        ]),
+    CheckItem(
+        date: '21:02 23.11',
+        storeName: 'Командор',
+        amount: 1500.00,
+        products: [
+          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+        ]),
+    CheckItem(
+        date: '21:02 23.11',
+        storeName: 'Командор',
+        amount: 1500.00,
+        products: [
+          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+        ]),
+    CheckItem(
+        date: '21:02 23.11',
+        storeName: 'Командор',
+        amount: 1500.00,
+        products: [
+          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+        ]),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 42,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       body: Stack(
         children: [
           // Большой круг на заднем фоне
           Positioned(
             child: Container(
               width: 415,
-              height: 210,
+              height: 260,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(110),
@@ -118,7 +145,7 @@ class MainPage extends StatelessWidget {
             right: 38, // 20 пикселей от правого края
             top: 120,
             child: Container(
-              height: 600,
+              height: 700,
               decoration: BoxDecoration(
                 color: Colors.green[500],
                 borderRadius: BorderRadius.circular(15),
@@ -126,11 +153,11 @@ class MainPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 80),
             child: Column(
               children: [
                 Container(
-                  width: 300,
+                  width: 320,
                   height: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -149,7 +176,7 @@ class MainPage extends StatelessWidget {
                 SizedBox(height: 10),
                 Container(
                   width: 320,
-                  height: 600,
+                  height: 646,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
@@ -296,12 +323,13 @@ class MainPage extends StatelessWidget {
                         const ColoredBox(
                           color: Color.fromARGB(192, 192, 192, 192),
                           child: SizedBox(
-                            width: 400,
+                            width: 320,
                             height: 1,
                           ),
                         ),
                         Container(
-                          height: 280, // Установите фиксированную высоту списка
+                          margin: EdgeInsets.only(top: 0),
+                          height: 330, // Установите фиксированную высоту списка
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -339,7 +367,7 @@ class MainPage extends StatelessWidget {
                       _buildBottomBarButton(Icons.home, 'Главная', (){
 
                       }),
-                      _buildBottomBarButton(Icons.add, 'Добавить', () {
+                      _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => AddPage()),
@@ -535,43 +563,6 @@ class MainPage extends StatelessWidget {
           fontSize: 20,
           color: Colors.black,
         ),
-      ),
-    );
-  }
-
-  Widget _buildUserInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 46,
-            width: 200,
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 5,
-                  child: Container(
-                    height: 1,
-                    width: 200,
-                    color: Colors.grey,
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    value,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            label,
-            style: TextStyle(color: Colors.grey, fontSize: 14),
-          ),
-        ],
       ),
     );
   }

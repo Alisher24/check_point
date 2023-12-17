@@ -25,18 +25,13 @@ class AddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 42,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       body: Stack(
         children: [
           // Большой круг на заднем фоне
           Positioned(
             child: Container(
               width: 415,
-              height: 210,
+              height: 260,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(110),
@@ -53,7 +48,7 @@ class AddPage extends StatelessWidget {
             right: 38, // 20 пикселей от правого края
             top: 120,
             child: Container(
-              height: 600,
+              height: 700,
               decoration: BoxDecoration(
                 color: Colors.green[500],
                 borderRadius: BorderRadius.circular(15),
@@ -61,11 +56,11 @@ class AddPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 80),
             child: Column(
               children: [
                 Container(
-                  width: 300,
+                  width: 320,
                   height: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -84,7 +79,7 @@ class AddPage extends StatelessWidget {
                 SizedBox(height: 10),
                 Container(
                   width: 320,
-                  height: 600,
+                  height: 646,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
@@ -122,9 +117,9 @@ class AddPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.only(left: 18),
+                            padding: EdgeInsets.only(left: 18, top: 0),
                             child: Container(
-                              height: 475,
+                              height: 520,
                               child: ListView.separated(
                                 separatorBuilder: (context, index) => const ColoredBox(
                                   child: SizedBox(
