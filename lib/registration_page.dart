@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
+import 'package:check_point/dateBase.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -13,24 +14,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController _loginController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  Database? _database;
-
   @override
   void initState() {
     super.initState();
-    _initDatabase();
-  }
-
-  Future<void> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'user_credentials.db');
-    _database = await openDatabase(path, version: 1, onCreate: (db, version) async {
-      await db.execute(
-        'CREATE TABLE users (id INTEGER PRIMARY KEY, login TEXT, password TEXT)',
-      );
-      await db.execute(
-        'CREATE TABLE cheks (id INTEGER PRIMARY KEY, user_id INTEGER, FOREIGN KEY (user_id) REFERENCES users (id), name TEXT, sum REAL)',
-      );
-    });
   }
 
   @override
@@ -246,7 +232,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<bool> _checkUserExists(String login) async {
-    final List<Map<String, dynamic>> maps = await _database!.query(
+    Database db = await DBProvider.db.database;
+    final List<Map<String, dynamic>> maps = await db!.query(
       'users',
       where: 'login = ?',
       whereArgs: [login],
@@ -255,6 +242,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<void> _saveUserCredentials(String login, String password) async {
-    await _database?.insert('users', {'login': login, 'password': password});
+    Database db = await DBProvider.db.database;
+    await db?.insert('users', {'login': login, 'password': password});
   }
 }

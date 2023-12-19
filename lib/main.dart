@@ -5,7 +5,16 @@ import 'package:check_point/QRScannerPage.dart';
 import 'package:check_point/check_model.dart';
 import 'package:check_point/check_item_widget.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  final String login;
+
+  MainPage({required this.login});
+
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   final List<CheckItem> checkitem = [
     CheckItem(
         date: '21:02 23.11',
@@ -119,6 +128,7 @@ class MainPage extends StatelessWidget {
         ]),
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,12 +173,12 @@ class MainPage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text('Ivan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -335,6 +345,7 @@ class MainPage extends StatelessWidget {
                               children: [
                                 // Ваши блоки с чеками
                                 ListView.builder(
+                                  padding: EdgeInsets.only(top: 0),
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: checkitem.length,
@@ -370,13 +381,13 @@ class MainPage extends StatelessWidget {
                       _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => AddPage()),
+                          MaterialPageRoute(builder: (context) => AddPage(login: widget.login)),
                         );
                       }),
                       _buildBottomBarButton(Icons.person, 'Профиль',() {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                          MaterialPageRoute(builder: (context) => ProfilePage(login: widget.login,)),
                         );
                       }),
                     ],

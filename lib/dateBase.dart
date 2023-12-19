@@ -1,6 +1,80 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+class DBProvider {
+  static final DBProvider db = DBProvider();
+  Database? _database;
+
+  Future<Database> get database async{
+    if (_database != null) return _database!;
+
+    _database = await initDB();
+    return _database!;
+  }
+
+  initDB() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, "Database.db");
+    return await openDatabase(path, version: 1, onOpen: (db) {
+    }, onCreate: (Database db, int version) async {
+      await db.execute('CREATE TABLE users '
+          '(id INTEGER PRIMARY KEY, '
+          'login TEXT, password TEXT, '
+          'first_name TEXT, '
+          'last_name TEXT, '
+          'surname TEXT, '
+          'email TEXT, '
+          'birthday TEXT)',);
+      
+      await db.execute('CREATE TABLE checks (id INTEGER PRIMARY KEY, user_id INTEGER, name TEXT, sum REAL)',);
+    });
+  }
+}
+
+class Check {
+  int? id;
+  int? userId;
+  String name;
+  double sum;
+
+  Check({this.id, this.userId, required this.name, required this.sum});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'name': name,
+      'sum': sum,
+    };
+  }
+}
+
+class CheckProvider {
+  Future<void> addCheck(Check check) async {
+    final db = await DBProvider.db.database;
+    await db.insert('checks', check.toMap());
+  }
+
+  Future<List<Check>> getChecksByUserId(int userId) async {
+    final db = await DBProvider.db.database;
+    final List<Map<String, dynamic>> maps =
+    await db.query('checks', where: 'user_id = ?', whereArgs: [userId]);
+
+    return List.generate(maps.length, (i) {
+      return Check(
+        id: maps[i]['id'],
+        userId: maps[i]['user_id'],
+        name: maps[i]['name'],
+        sum: maps[i]['sum'],
+      );
+    });
+  }
+}
+
+/*
 class Data {
   Database? _database;
 
@@ -12,4 +86,4 @@ class Data {
       );
     });
   }
-}
+}*/

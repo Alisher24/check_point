@@ -3,7 +3,16 @@ import 'package:check_point/main.dart';
 import 'package:check_point/profile.dart';
 import 'package:check_point/check_model.dart';
 
-class AddPage extends StatelessWidget {
+class AddPage extends StatefulWidget {
+  final String login;
+
+  AddPage({required this.login});
+
+  @override
+  _AddPageState createState() => _AddPageState();
+}
+
+class _AddPageState extends State<AddPage> {
   final List<CategoryItem> categories = [
     CategoryItem(icon: Icons.menu_book, name: 'Книги'),
     CategoryItem(icon: Icons.bakery_dining_outlined, name: 'Выпечка'),
@@ -66,12 +75,12 @@ class AddPage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text('Ivan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -158,7 +167,7 @@ class AddPage extends StatelessWidget {
                       _buildBottomBarButton(Icons.home, 'Главная', (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
+                          MaterialPageRoute(builder: (context) => MainPage(login: widget.login,)),
                         );
                       }),
                       _buildBottomBarButton(Icons.category, 'Категории', () {
@@ -167,7 +176,7 @@ class AddPage extends StatelessWidget {
                       _buildBottomBarButton(Icons.person, 'Профиль',() {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                          MaterialPageRoute(builder: (context) => ProfilePage(login: widget.login)),
                         );
                       }),
                     ],

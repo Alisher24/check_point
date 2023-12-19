@@ -5,6 +5,8 @@ import 'package:check_point/registration_page.dart';
 import 'package:check_point/profile.dart';
 import 'package:path/path.dart';
 
+import 'dateBase.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -36,21 +38,10 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _pinController = TextEditingController();
   FocusNode _pinFocusNode = FocusNode();
-  Database? _database;
 
   @override
   void initState() {
     super.initState();
-    _initDatabase();
-  }
-
-  Future<void> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'user_credentials.db');
-    _database = await openDatabase(path, version: 1, onCreate: (db, version) async {
-      await db.execute(
-        'CREATE TABLE users (id INTEGER PRIMARY KEY, login TEXT, password TEXT)',
-      );
-    });
   }
 
   bool _isNumeric(String value) {
@@ -61,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool> _checkUserExists(String login) async {
-    final List<Map<String, dynamic>> maps = await _database!.query(
+    Database db = await DBProvider.db.database;
+    final List<Map<String, dynamic>> maps = await db!.query(
       'users',
       where: 'login = ?',
       whereArgs: [login],
@@ -70,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool> _checkPasswordMatches(String login, String password) async {
-    final List<Map<String, dynamic>> maps = await _database!.query(
+    Database db = await DBProvider.db.database;
+    final List<Map<String, dynamic>> maps = await db!.query(
       'users',
       where: 'login = ? AND password = ?',
       whereArgs: [login, password],
@@ -107,6 +100,8 @@ class _LoginPageState extends State<LoginPage> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  // ProfilePage profilePage = ProfilePage();
 
   @override
   Widget build(BuildContext context) {
@@ -211,9 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                               bool isAuthenticated = await _checkUserCredentials(phone, pin);
 
                               if (isAuthenticated) {
+                                // profilePage.login = phone;
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                                  MaterialPageRoute(builder: (context) => ProfilePage(login: phone)),
                                 );
                               } else {
                                 _showLoginFailed(context);

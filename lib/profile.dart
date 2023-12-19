@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:check_point/main.dart';
 import 'package:check_point/add.dart';
 import 'package:check_point/vxod.dart';
+import 'package:check_point/dateBase.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  final String login;
+
+  ProfilePage({required this.login});
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,12 +59,12 @@ class ProfilePage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text('Ivan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -139,13 +150,13 @@ class ProfilePage extends StatelessWidget {
                       _buildBottomBarButton(Icons.home, 'Главная', (){
                         Navigator.pushReplacement(
                             context, 
-                            MaterialPageRoute(builder: (context) => MainPage()),
+                            MaterialPageRoute(builder: (context) => MainPage(login: widget.login)),
                         );
                       }),
                       _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => AddPage()),
+                          MaterialPageRoute(builder: (context) => AddPage(login: widget.login)),
                         );
                       }),
                       _buildBottomBarButton(Icons.person, 'Профиль',() {
