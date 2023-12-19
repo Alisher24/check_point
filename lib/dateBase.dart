@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:check_point/check_model.dart';
 
 class DBProvider {
   static final DBProvider db = DBProvider();
@@ -79,10 +80,113 @@ class DBProvider {
           'email TEXT, '
           'birthday TEXT)',);
       
-      await db.execute('CREATE TABLE checks (id INTEGER PRIMARY KEY, user_id INTEGER, name TEXT, sum REAL)',);
+      await db.execute('CREATE TABLE checks (id INTEGER PRIMARY KEY, '
+          'name TEXT, '
+          'sum REAL, '
+          'user_id INTEGER, '
+          'date TEXT,'
+          'FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE)',);
+
+      await db.execute('CREATE TABLE check_item (id INTEGER PRIMARY KEY, '
+          'check_id INTEGER, '
+          'name TEXT, '
+          'price REAL, '
+          'quantity REAL, '
+          'FOREIGN KEY (check_id) REFERENCES checks (id) ON DELETE CASCADE ON UPDATE CASCADE)',);
     });
   }
+
+  Future<void> insertCheckData(Map<String, dynamic> checkData) async {
+    DateTime now = DateTime.now();
+    String _addLeadingZero(int number) {
+      return number.toString().padLeft(2, '0');
+    }
+
+    Database db = await database;
+
+    // Вставка данных чека
+    int checkId = await db.insert(
+      'checks',
+      {
+        'name': checkData['data']['json']['user'],
+        'date': "${now.year}/${_addLeadingZero(now.month)}/${_addLeadingZero(now.day)}",
+        'user_id': _loggedInUserId,
+      },
+    );
+
+    // Вставка данных товаров в чеке
+    List<dynamic> items = checkData['data']['json']['items'];
+    double totalSum = 0;
+
+    for (var item in items) {
+      await db.insert(
+        'check_item',
+        {
+          'check_id': checkId,
+          'name': item['name'],
+          'price': (item['price']).toDouble() / 100,
+          'quantity': item['quantity'],
+        },
+      );
+      totalSum += ((item['price']).toDouble() / 100) * (item['quantity']).toDouble();
+    }
+
+    await db.update(
+      'checks',
+      {'sum': totalSum},
+      where: 'id = ?',
+      whereArgs: [checkId],
+    );
+  }
+
+  Future<List<CheckItem>> getCheck() async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query('checks');
+
+    List<CheckItem> checkItems = [];
+
+    for (var data in results) {
+      int checkId = data['id'];
+
+      List<ProductItem> products = await getCheckItemsByCheckId(checkId);
+
+      CheckItem checkItem = CheckItem(
+        id: data['id'],
+        name: data['name'],
+        sum: data['sum'],
+        user_id: data['user_id'],
+        date: data['date'],
+        products: products,
+      );
+
+      checkItems.add(checkItem);
+    }
+
+    return checkItems;
+  }
+
+  Future<List<ProductItem>> getCheckItemsByCheckId(int checkId) async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'check_item',
+      where: 'check_id = ?',
+      whereArgs: [checkId],
+    );
+
+    List<ProductItem> checkItems = results.map((data) {
+      return ProductItem(
+        id: data['id'],
+        checkId: data['check_id'],
+        name: data['name'],
+        price: data['price'],
+        quantity: data['quantity'],
+      );
+    }).toList();
+
+    return checkItems;
+  }
 }
+
 
 class User {
   int id;
@@ -108,67 +212,45 @@ class User {
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as int,
-      login: map['login'] as String,
-      password: map['password'] as String,
-      firstName: map['first_name'] as String,
-      lastName: map['last_name'] as String,
-      middleName: map['surname'] as String,
-      email: map['email'] as String,
-      birthday: map['birthday'] as String,
+      login: map['login'] as String? ?? '',
+      password: map['password'] as String? ?? '',
+      firstName: map['first_name'] as String? ?? '',
+      lastName: map['last_name'] as String? ?? '',
+      middleName: map['surname'] as String? ?? '',
+      email: map['email'] as String? ?? '',
+      birthday: map['birthday'] as String? ?? '',
     );
   }
 }
 
-class Check {
-  int? id;
-  int? userId;
-  String name;
-  double sum;
-
-  Check({this.id, this.userId, required this.name, required this.sum});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'name': name,
-      'sum': sum,
-    };
-  }
-}
-
-class CheckProvider {
-  Future<void> addCheck(Check check) async {
-    final db = await DBProvider.db.database;
-    await db.insert('checks', check.toMap());
-  }
-
-  Future<List<Check>> getChecksByUserId(int userId) async {
-    final db = await DBProvider.db.database;
-    final List<Map<String, dynamic>> maps =
-    await db.query('checks', where: 'user_id = ?', whereArgs: [userId]);
-
-    return List.generate(maps.length, (i) {
-      return Check(
-        id: maps[i]['id'],
-        userId: maps[i]['user_id'],
-        name: maps[i]['name'],
-        sum: maps[i]['sum'],
-      );
-    });
-  }
-}
-
-/*
-class Data {
-  Database? _database;
-
-  Future<void> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'user_credentials.db');
-    _database = await openDatabase(path, version: 1, onCreate: (db, version) async {
-      await db.execute(
-        'CREATE TABLE cheks (id INTEGER PRIMARY KEY, , name TEXT, sum REAL)',
-      );
-    });
-  }
-}*/
+// class Check {
+//   final int id;
+//   final String name;
+//   final double sum;
+//   final int user_id;
+//   final String date;
+//
+//   Check({
+//     required this.id,
+//     required this.name,
+//     required this.sum,
+//     required this.user_id,
+//     required this.date,
+//   });
+// }
+//
+// class CheckItem {
+//   final int id;
+//   final int checkId;
+//   final String name;
+//   final double price;
+//   final double quantity;
+//
+//   CheckItem({
+//     required this.id,
+//     required this.checkId,
+//     required this.name,
+//     required this.price,
+//     required this.quantity,
+//   });
+// }

@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
+import 'dateBase.dart';
+
 class NalogRuSession {
   NalogRuSession(String qr){
     getData(qr);
@@ -18,14 +20,15 @@ class NalogRuSession {
       print('Успешный запрос!');
       // Получаем ответ от сервера
       var data = jsonDecode(response.body);
+      await DBProvider.db.insertCheckData(data);
       // Выводим данные
-      for (var item in data['data']['json']['items']) {
-        print('Название товара: ${item['name']}');
-        print('Количество: ${item['quantity']}');
-        print('Цена за единицу: ${item['price']}');
-        print('Общая сумма: ${item['sum']}');
-        print('---');
-      }
+      // for (var item in data['data']['json']['items']) {
+      //   print('Название товара: ${item['name']}');
+      //   print('Количество: ${item['quantity']}');
+      //   print('Цена за единицу: ${item['price']}');
+      //   print('Общая сумма: ${item['sum']}');
+      //   print('---');
+      // }
     } else {
       print('Ошибка запроса: ${response.statusCode}.');
     }

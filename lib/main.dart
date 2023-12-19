@@ -2,8 +2,10 @@ import 'package:check_point/add.dart';
 import 'package:check_point/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:check_point/QRScannerPage.dart';
-import 'package:check_point/check_model.dart';
 import 'package:check_point/check_item_widget.dart';
+
+import 'check_model.dart';
+import 'dateBase.dart';
 
 class MainPage extends StatefulWidget {
   final String login;
@@ -15,119 +17,137 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final List<CheckItem> checkitem = [
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 7100.00,
-        products: [
-          ProductItem(productName: 'Лапша Биг Бон говядина + соус томатный с базиликом + доширак в пакете', productPrice: 500.00, productPriceAll: 1000.00, kol: 2),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 1),
-          ProductItem(productName: 'Творог 9%', productPrice: 200.00, productPriceAll: 800.00, kol: 4),
-          ProductItem(productName: 'Творог 0%', productPrice: 100.00, productPriceAll: 500.00, kol: 5),
-          ProductItem(productName: 'Сыр 50%', productPrice: 800.00, productPriceAll: 1600.00, kol: 2),
-          ProductItem(productName: 'Протеин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-          ProductItem(productName: 'Креатин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-          ProductItem(productName: 'Гейнер', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-    CheckItem(
-        date: '21:02 23.11',
-        storeName: 'Командор',
-        amount: 1500.00,
-        products: [
-          ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-          ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-        ]),
-  ];
+  List<CheckItem> allCheckItems = [];
 
+  @override
+  void initState() {
+    super.initState();
+    fetchCheckItems();
+  }
+  // final List<CheckItem> checkitem = [
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 7100.00,
+  //       products: [
+  //         ProductItem(productName: 'Лапша Биг Бон говядина + соус томатный с базиликом + доширак в пакете', productPrice: 500.00, productPriceAll: 1000.00, kol: 2),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 1),
+  //         ProductItem(productName: 'Творог 9%', productPrice: 200.00, productPriceAll: 800.00, kol: 4),
+  //         ProductItem(productName: 'Творог 0%', productPrice: 100.00, productPriceAll: 500.00, kol: 5),
+  //         ProductItem(productName: 'Сыр 50%', productPrice: 800.00, productPriceAll: 1600.00, kol: 2),
+  //         ProductItem(productName: 'Протеин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
+  //         ProductItem(productName: 'Креатин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
+  //         ProductItem(productName: 'Гейнер', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  //   CheckItem(
+  //       date: '21:02 23.11',
+  //       storeName: 'Командор',
+  //       amount: 1500.00,
+  //       products: [
+  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
+  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
+  //       ]),
+  // ];
+  Future<void> fetchCheckItems() async {
+    // Получение данных из базы данных
+    try {
+      List<CheckItem> checks = await DBProvider.db.getCheck();
+      setState(() {
+        allCheckItems = checks;
+      });
+    } catch (e) {
+      // Обработка ошибок, если не удалось получить данные
+      print('Error fetching data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,9 +368,9 @@ class _MainPageState extends State<MainPage> {
                                   padding: EdgeInsets.only(top: 0),
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
-                                  itemCount: checkitem.length,
+                                  itemCount: allCheckItems.length,
                                   itemBuilder: (context, index) {
-                                    return _buildCheckItem(context, checkitem[index]);
+                                    return _buildCheckItem(context, allCheckItems[index]);
                                   },
                                 ),
                               ],
@@ -433,8 +453,8 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildInfoText('${checkItem.date}'),
-                          _buildInfoText('${checkItem.storeName}'),
-                          _buildInfoText('${checkItem.amount}'),
+                          _buildInfoText('${checkItem.name}'),
+                          _buildInfoText('${checkItem.sum}'),
                         ],
                       ),
                     ),
@@ -527,13 +547,13 @@ class _MainPageState extends State<MainPage> {
                         padding: const EdgeInsets.only(right: 50.0),
                         child:
                         Text(
-                          '${product.productName} x1',
+                          '${product.name} x1',
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
                     ),
                     Text(
-                      '${product.productPrice.toStringAsFixed(2)} ₽',
+                      '${product.price.toStringAsFixed(2)} ₽',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
@@ -546,11 +566,11 @@ class _MainPageState extends State<MainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'x${product.kol.toStringAsFixed(0)}',
+                      'x${product.quantity.toStringAsFixed(0)}',
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '${product.productPriceAll.toStringAsFixed(2)} ₽',
+                      '${(product.price * product.quantity).toStringAsFixed(2)} ₽',
                       style: TextStyle(fontSize: 16),
                     ),
                   ],

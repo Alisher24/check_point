@@ -23,13 +23,13 @@ class CheckItemWidget extends StatelessWidget {
                 width: 90, // Отступ от даты для текста названия магазина
                 child: Center(
                   child: Text(
-                    check.storeName.length > 90 ? '${check.storeName.substring(0, 90)}...' : check.storeName,
+                    check.name.length > 90 ? '${check.name.substring(0, 90)}...' : check.name,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 17),
                   ),
                 ),
               ),
-              Text('${check.amount.toStringAsFixed(2)} ₽', style: TextStyle(fontSize: 18)),
+              Text('${check.sum.toStringAsFixed(2)} ₽', style: TextStyle(fontSize: 18)),
             ],
           ),
         ),
