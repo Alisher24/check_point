@@ -18,6 +18,27 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  late User user; // или используйте вашу модель пользователя
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    int? loggedInUserId = DBProvider.db.getLoggedInUserId();
+    if (loggedInUserId != null) {
+      User? fetchedUser = await DBProvider.db.getUserData();
+      if (fetchedUser != null) {
+        setState(() {
+          user = fetchedUser;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,11 +104,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       SizedBox(height: 20),
-                      _buildUserInfoRow('Фамилия', ''),
-                      _buildUserInfoRow('Имя', ''),
-                      _buildUserInfoRow('Отчество', ''),
-                      _buildUserInfoRow('Почта', ''),
-                      _buildUserInfoRow('Дата рождения', ''),
+                      _buildUserInfoRow('Фамилия', user?.lastName ?? ''),
+                      _buildUserInfoRow('Имя', user?.firstName ?? ''),
+                      _buildUserInfoRow('Отчество', user?.middleName ?? ''),
+                      _buildUserInfoRow('Почта', user?.email ?? ''),
+                      _buildUserInfoRow('Дата рождения', user?.birthday ?? ''),
                       SizedBox(height: 150),
                       ElevatedButton(
                         onPressed: () {
@@ -260,6 +281,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   final TextEditingController birthdayController = TextEditingController();
   int? userId = DBProvider.db.getLoggedInUserId();
 
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -286,9 +308,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
             _buildTextField("Имя", firstNameController),
             _buildTextField("Отчество", middleNameController),
             _buildTextField("Почта", emailController),
-            _buildTextField("Дата рождения", birthdayController),
+            _buildTextField("Дата рождения", birthdayController, isDateOfBirth: true),
             SizedBox(height: 20),
-            // Кнопки "Изменить" и "Назад"
             Container(
               color: Colors.green[500],
               padding: EdgeInsets.symmetric(horizontal: 17.0),
@@ -297,44 +318,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 children: [
                   SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () async {
-                        // Все поля заполнены верно
-                        String lastName = lastNameController.text;
-                        String firstName = firstNameController.text;
-                        String middleName = middleNameController.text;
-                        String email = emailController.text;
-                        String dob = birthdayController.text;
-
-                        // Проверка на пустые поля
-                        if (lastName.isEmpty ||
-                            firstName.isEmpty ||
-                            middleName.isEmpty ||
-                            email.isEmpty ||
-                            dob.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Ошибка"),
-                                content: Text("Все поля должны быть заполнены"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("ОК"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          // Выполните необходимые действия с полученными значениями (например, отправка на сервер).
-                          await DBProvider.db.updateUserData(userId!, firstName, lastName, middleName, email, dob);
-
-                          // Закройте диалоговое окно после сохранения.
-                          Navigator.of(context).pop();
-                        }
+                    onPressed: () {
+                      _saveProfile();
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.transparent,
@@ -348,7 +333,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // Закройте диалоговое окно при нажатии на кнопку "Назад".
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -369,7 +353,43 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  void _saveProfile() async {
+    String lastName = lastNameController.text;
+    String firstName = firstNameController.text;
+    String middleName = middleNameController.text;
+    String email = emailController.text;
+    String dob = birthdayController.text;
+
+    if (lastName.isEmpty ||
+        firstName.isEmpty ||
+        middleName.isEmpty ||
+        email.isEmpty ||
+        dob.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Ошибка"),
+            content: Text("Все поля должны быть заполнены"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("ОК"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      await DBProvider.db.updateUserData(userId!, firstName, lastName, middleName, email, dob);
+      // Выполните необходимые действия с полученными значениями (например, отправка на сервер).
+      Navigator.of(context).pop();
+    }
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {bool isDateOfBirth = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Column(
@@ -384,7 +404,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
             height: 35,
             child: TextField(
               controller: controller,
-              inputFormatters: [DateInputFormatter()],
+              inputFormatters: isDateOfBirth ? [DateInputFormatter()] : [],
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -400,20 +420,18 @@ class DateInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    // Позволяет вводить только цифры и точки
     String filteredValue = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
 
-    // Добавляет автоматическое добавление точек
-    if (filteredValue.length > 2 && !filteredValue.contains('.')) {
-      filteredValue = filteredValue.substring(0, 2) + '.' + filteredValue.substring(2);
-    }
-    if (filteredValue.length > 5 && !filteredValue.substring(3).contains('.')) {
-      filteredValue = filteredValue.substring(0, 5) + '.' + filteredValue.substring(5);
-    }
-
-    // Ограничивает количество символов ввода до 8
     if (filteredValue.length > 10) {
       filteredValue = filteredValue.substring(0, 10);
+    }
+
+    if (filteredValue.length >= 2 && filteredValue[2] != '.') {
+      filteredValue = filteredValue.substring(0, 2) + '.' + filteredValue.substring(2);
+    }
+
+    if (filteredValue.length >= 5 && filteredValue[5] != '.') {
+      filteredValue = filteredValue.substring(0, 5) + '.' + filteredValue.substring(5);
     }
 
     return TextEditingValue(
@@ -422,5 +440,4 @@ class DateInputFormatter extends TextInputFormatter {
     );
   }
 }
-
 

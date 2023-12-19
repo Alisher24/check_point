@@ -27,6 +27,21 @@ class DBProvider {
     }
   }
 
+  Future<User?> getUserData() async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [_loggedInUserId],
+    );
+
+    if (results.isNotEmpty) {
+      return User.fromMap(results.first);
+    } else {
+      return null;
+    }
+  }
+
   Future<Database> get database async{
     if (_database != null) return _database!;
 
@@ -66,6 +81,41 @@ class DBProvider {
       
       await db.execute('CREATE TABLE checks (id INTEGER PRIMARY KEY, user_id INTEGER, name TEXT, sum REAL)',);
     });
+  }
+}
+
+class User {
+  int id;
+  String login;
+  String password;
+  String firstName;
+  String lastName;
+  String middleName;
+  String email;
+  String birthday;
+
+  User({
+    required this.id,
+    required this.login,
+    required this.password,
+    required this.firstName,
+    required this.lastName,
+    required this.middleName,
+    required this.email,
+    required this.birthday,
+  });
+
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      id: map['id'] as int,
+      login: map['login'] as String,
+      password: map['password'] as String,
+      firstName: map['first_name'] as String,
+      lastName: map['last_name'] as String,
+      middleName: map['surname'] as String,
+      email: map['email'] as String,
+      birthday: map['birthday'] as String,
+    );
   }
 }
 
