@@ -40,6 +40,7 @@ dependencies:
   camera: any
   http: any
   fluttertoast: any
+  intl: ^0.19.0
 
 
 

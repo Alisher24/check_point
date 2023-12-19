@@ -364,7 +364,7 @@ class _MainPageState extends State<MainPage> {
                 SizedBox(height: 10),
                 Container(
                   width: double.infinity,
-                  height: 60,
+                  height: 60.285,
                   decoration: BoxDecoration(
                     color: Colors.green[500],
                     borderRadius: BorderRadius.only(

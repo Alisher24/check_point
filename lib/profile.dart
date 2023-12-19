@@ -3,6 +3,10 @@ import 'package:check_point/main.dart';
 import 'package:check_point/add.dart';
 import 'package:check_point/vxod.dart';
 import 'package:check_point/dateBase.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
   final String login;
@@ -14,7 +18,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           // Задний блок за центральным блоком с информацией
           Positioned(
-            left: 38,  // 20 пикселей от левого края
+            left: 38, // 20 пикселей от левого края
             right: 38, // 20 пикселей от правого края
             top: 120,
             child: Container(
@@ -85,10 +88,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       _buildUserInfoRow('Отчество', ''),
                       _buildUserInfoRow('Почта', ''),
                       _buildUserInfoRow('Дата рождения', ''),
-                      _buildUserInfoRow('Пароль', ''),
+                      SizedBox(height: 150),
                       ElevatedButton(
                         onPressed: () {
                           // Добавьте обработчик нажатия для кнопки "Изменить"
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return EditProfileDialog();
+                            },
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.transparent,
@@ -96,23 +105,29 @@ class _ProfilePageState extends State<ProfilePage> {
                           fixedSize: Size(200, 50), // Задаем ширину и высоту кнопки
                         ),
                         child: Material(
-                          borderRadius: BorderRadius.circular(10), // Задаем радиус скругления краев
+                          borderRadius: BorderRadius.circular(10),
                           color: Colors.transparent,
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(10), // Задаем радиус скругления краев
-                            splashColor: Colors.grey, // Задаем цвет всплеска при нажатии
+                            borderRadius: BorderRadius.circular(10),
+                            splashColor: Colors.grey,
                             onTap: () {
                               // Добавьте обработчик нажатия для кнопки "Изменить"
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EditProfileDialog();
+                                },
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20), // Задаем радиус скругления краев для тени
+                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Colors.transparent,
-                                    spreadRadius: 0.5, // Устанавливаем значение для распределения тени
-                                    blurRadius: 5, // Устанавливаем значение для размытия тени
-                                    offset: Offset(0, 2), // Устанавливаем смещение тени
+                                    spreadRadius: 0.5,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 2),
                                   ),
                                 ],
                               ),
@@ -136,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 10),
                 Container(
                   width: double.infinity,
-                  height: 60,
+                  height: 60.285,
                   decoration: BoxDecoration(
                     color: Colors.green[500],
                     borderRadius: BorderRadius.only(
@@ -147,10 +162,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildBottomBarButton(Icons.home, 'Главная', (){
+                      _buildBottomBarButton(Icons.home, 'Главная', () {
                         Navigator.pushReplacement(
-                            context, 
-                            MaterialPageRoute(builder: (context) => MainPage(login: widget.login)),
+                          context,
+                          MaterialPageRoute(builder: (context) => MainPage(login: widget.login)),
                         );
                       }),
                       _buildBottomBarButton(Icons.category, 'Категории', () {
@@ -159,9 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           MaterialPageRoute(builder: (context) => AddPage(login: widget.login)),
                         );
                       }),
-                      _buildBottomBarButton(Icons.person, 'Профиль',() {
-
-                      }),
+                      _buildBottomBarButton(Icons.person, 'Профиль', () {}),
                     ],
                   ),
                 ),
@@ -233,3 +246,181 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+class EditProfileDialog extends StatefulWidget {
+  @override
+  _EditProfileDialogState createState() => _EditProfileDialogState();
+}
+
+class _EditProfileDialogState extends State<EditProfileDialog> {
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController middleNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController birthdayController = TextEditingController();
+  int? userId = DBProvider.db.getLoggedInUserId();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Container(
+        width: 400,
+        height: 429,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(
+            color: Colors.green,
+            width: 3.0,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            _buildTextField("Фамилия", lastNameController),
+            _buildTextField("Имя", firstNameController),
+            _buildTextField("Отчество", middleNameController),
+            _buildTextField("Почта", emailController),
+            _buildTextField("Дата рождения", birthdayController),
+            SizedBox(height: 20),
+            // Кнопки "Изменить" и "Назад"
+            Container(
+              color: Colors.green[500],
+              padding: EdgeInsets.symmetric(horizontal: 17.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                        // Все поля заполнены верно
+                        String lastName = lastNameController.text;
+                        String firstName = firstNameController.text;
+                        String middleName = middleNameController.text;
+                        String email = emailController.text;
+                        String dob = birthdayController.text;
+
+                        // Проверка на пустые поля
+                        if (lastName.isEmpty ||
+                            firstName.isEmpty ||
+                            middleName.isEmpty ||
+                            email.isEmpty ||
+                            dob.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Ошибка"),
+                                content: Text("Все поля должны быть заполнены"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("ОК"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          // Выполните необходимые действия с полученными значениями (например, отправка на сервер).
+                          await DBProvider.db.updateUserData(userId!, firstName, lastName, middleName, email, dob);
+
+                          // Закройте диалоговое окно после сохранения.
+                          Navigator.of(context).pop();
+                        }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Сохранить',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Закройте диалоговое окно при нажатии на кнопку "Назад".
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Назад',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(color: Colors.grey, fontSize: 14),
+          ),
+          SizedBox(height: 4),
+          Container(
+            height: 35,
+            child: TextField(
+              controller: controller,
+              inputFormatters: [DateInputFormatter()],
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // Позволяет вводить только цифры и точки
+    String filteredValue = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Добавляет автоматическое добавление точек
+    if (filteredValue.length > 2 && !filteredValue.contains('.')) {
+      filteredValue = filteredValue.substring(0, 2) + '.' + filteredValue.substring(2);
+    }
+    if (filteredValue.length > 5 && !filteredValue.substring(3).contains('.')) {
+      filteredValue = filteredValue.substring(0, 5) + '.' + filteredValue.substring(5);
+    }
+
+    // Ограничивает количество символов ввода до 8
+    if (filteredValue.length > 10) {
+      filteredValue = filteredValue.substring(0, 10);
+    }
+
+    return TextEditingValue(
+      text: filteredValue,
+      selection: TextSelection.collapsed(offset: filteredValue.length),
+    );
+  }
+}
+
+

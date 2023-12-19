@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:check_point/registration_page.dart';
 import 'package:check_point/profile.dart';
 import 'package:path/path.dart';
-
 import 'dateBase.dart';
 
 void main() {
@@ -199,17 +200,17 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.only(right: 16),
                         child: ElevatedButton(
                           onPressed: () async {
-                            String phone = _phoneController.text;
-                            String pin = _pinController.text;
+                            String login = _phoneController.text;
+                            String password = _pinController.text;
 
-                            if (phone.isNotEmpty && pin.isNotEmpty) {
-                              bool isAuthenticated = await _checkUserCredentials(phone, pin);
+                            if (login.isNotEmpty && password.isNotEmpty) {
+                              bool isAuthenticated = await _checkUserCredentials(login, password);
 
                               if (isAuthenticated) {
-                                // profilePage.login = phone;
+                                await DBProvider.db.getUserIdByLogin(login);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ProfilePage(login: phone)),
+                                  MaterialPageRoute(builder: (context) => ProfilePage(login: login)),
                                 );
                               } else {
                                 _showLoginFailed(context);

@@ -7,12 +7,47 @@ import 'package:path/path.dart';
 class DBProvider {
   static final DBProvider db = DBProvider();
   Database? _database;
+  int? _loggedInUserId;
+
+  int? getLoggedInUserId() {
+    return _loggedInUserId;
+  }
+
+  Future<void> getUserIdByLogin(String login) async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'users',
+      columns: ['id'],
+      where: 'login = ?',
+      whereArgs: [login],
+    );
+
+    if (results.isNotEmpty) {
+      _loggedInUserId = await results.first['id'] as int;
+    }
+  }
 
   Future<Database> get database async{
     if (_database != null) return _database!;
 
     _database = await initDB();
     return _database!;
+  }
+
+  Future<void> updateUserData(int userId, String firstName, String lastName, String middleName, String email, String birthday) async {
+    Database db = await database;
+    await db.update(
+      'users',
+      {
+        'first_name': firstName,
+        'last_name': lastName,
+        'surname': middleName,
+        'email': email,
+        'birthday': birthday,
+      },
+      where: 'id = ?',
+      whereArgs: [userId],
+    );
   }
 
   initDB() async {
