@@ -8,9 +8,9 @@ import 'check_model.dart';
 import 'dateBase.dart';
 
 class MainPage extends StatefulWidget {
-  final String login;
+  final User user;
 
-  MainPage({required this.login});
+  MainPage({required this.user});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -18,131 +18,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<CheckItem> allCheckItems = [];
+  double sumAll = 0;
 
   @override
   void initState() {
     super.initState();
     fetchCheckItems();
   }
-  // final List<CheckItem> checkitem = [
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 7100.00,
-  //       products: [
-  //         ProductItem(productName: 'Лапша Биг Бон говядина + соус томатный с базиликом + доширак в пакете', productPrice: 500.00, productPriceAll: 1000.00, kol: 2),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 1),
-  //         ProductItem(productName: 'Творог 9%', productPrice: 200.00, productPriceAll: 800.00, kol: 4),
-  //         ProductItem(productName: 'Творог 0%', productPrice: 100.00, productPriceAll: 500.00, kol: 5),
-  //         ProductItem(productName: 'Сыр 50%', productPrice: 800.00, productPriceAll: 1600.00, kol: 2),
-  //         ProductItem(productName: 'Протеин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-  //         ProductItem(productName: 'Креатин', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-  //         ProductItem(productName: 'Гейнер', productPrice: 1500.00, productPriceAll: 1500.00, kol: 1),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  //   CheckItem(
-  //       date: '21:02 23.11',
-  //       storeName: 'Командор',
-  //       amount: 1500.00,
-  //       products: [
-  //         ProductItem(productName: 'Филе курицы', productPrice: 500.00, productPriceAll: 500.00, kol: 3),
-  //         ProductItem(productName: 'Филе индейки', productPrice: 1000.00, productPriceAll: 1000.00, kol: 3),
-  //       ]),
-  // ];
   Future<void> fetchCheckItems() async {
     // Получение данных из базы данных
     try {
-      List<CheckItem> checks = await DBProvider.db.getCheck();
+      List<CheckItem> checks = await DBProvider.db.getCheck(widget.user.id);
       setState(() {
         allCheckItems = checks;
       });
+      checks.forEach((element) {sumAll+=element.sum; });
     } catch (e) {
       // Обработка ошибок, если не удалось получить данные
       print('Error fetching data: $e');
@@ -198,7 +88,7 @@ class _MainPageState extends State<MainPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.user.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -215,7 +105,7 @@ class _MainPageState extends State<MainPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 20),
-                        Text('47 283,75', style: TextStyle(fontSize: 45)),
+                        Text('${sumAll.toStringAsFixed(2)}', style: TextStyle(fontSize: 45)),
                         // Разделительная линия
                         const ColoredBox(
                           color: Color.fromARGB(192, 192, 192, 192),
@@ -231,7 +121,7 @@ class _MainPageState extends State<MainPage> {
                             // Добавьте обработчик нажатия для кнопки
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => QRScannerPage()),
+                              MaterialPageRoute(builder: (context) => QRScannerPage(user: widget.user)),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -401,13 +291,13 @@ class _MainPageState extends State<MainPage> {
                       _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => AddPage(login: widget.login)),
+                          MaterialPageRoute(builder: (context) => AddPage(user: widget.user)),
                         );
                       }),
                       _buildBottomBarButton(Icons.person, 'Профиль',() {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfilePage(login: widget.login,)),
+                          MaterialPageRoute(builder: (context) => ProfilePage(user: widget.user,)),
                         );
                       }),
                     ],

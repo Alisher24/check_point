@@ -66,31 +66,39 @@ class _LoginPageState extends State<LoginPage> {
     return maps.isNotEmpty;
   }
 
-  Future<bool> _checkPasswordMatches(String login, String password) async {
+  Future<User?> _checkPasswordMatches(String login, String password) async {
     Database db = await DBProvider.db.database;
     final List<Map<String, dynamic>> maps = await db!.query(
       'users',
       where: 'login = ? AND password = ?',
       whereArgs: [login, password],
     );
-    return maps.isNotEmpty;
+
+    if (maps.isNotEmpty) {
+      // Если запись найдена, создайте объект User и верните его
+      return User(
+        id: maps[0]['id'],
+        login: maps[0]['login'],
+        password: maps[0]['password'],
+        firstName: maps[0]['first_name'] as String? ?? '',
+        lastName: maps[0]['last_name'] as String? ?? '',
+        middleName: maps[0]['surname'] as String? ?? '',
+        email: maps[0]['email'] as String? ?? '',
+        birthday: maps[0]['birthday'] as String? ?? '',
+        // Инициализируйте остальные поля пользователя
+      );
+    } else {
+      return null;
+    }
   }
 
-  Future<bool> _checkUserCredentials(String login, String password) async {
+  Future<User?> _checkUserCredentials(String login, String password) async {
     if (login.isNotEmpty && password.isNotEmpty) {
-      bool userExists = await _checkUserExists(login);
-
-      if (userExists) {
-        bool passwordMatches = await _checkPasswordMatches(login, password);
-        return passwordMatches;
-      }
+      User? user = await _checkPasswordMatches(login, password);
+      return user;
     }
 
-    return false;
-  }
-
-  Future<bool> performLoginCheck(String login, String password) async {
-    return await _checkUserCredentials(login, password);
+    return null;
   }
 
   void _showLoginFailed(BuildContext context) {
@@ -208,13 +216,13 @@ class _LoginPageState extends State<LoginPage> {
                             String password = _pinController.text;
 
                             if (login.isNotEmpty && password.isNotEmpty) {
-                              bool isAuthenticated = await _checkUserCredentials(login, password);
+                              User? user = await _checkUserCredentials(login, password);
 
-                              if (isAuthenticated) {
+                              if (user != null) {
                                 await DBProvider.db.getUserIdByLogin(login);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ProfilePage(login: login)),
+                                  MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
                                 );
                               } else {
                                 _showLoginFailed(context);

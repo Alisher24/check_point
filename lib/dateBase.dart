@@ -92,6 +92,7 @@ class DBProvider {
           'name TEXT, '
           'price REAL, '
           'quantity REAL, '
+          'category TEXT, '
           'FOREIGN KEY (check_id) REFERENCES checks (id) ON DELETE CASCADE ON UPDATE CASCADE)',);
     });
   }
@@ -103,19 +104,18 @@ class DBProvider {
     }
 
     Database db = await database;
-
     // Вставка данных чека
     int checkId = await db.insert(
       'checks',
       {
-        'name': checkData['data']['json']['user'],
-        'date': "${now.year}/${_addLeadingZero(now.month)}/${_addLeadingZero(now.day)}",
+        'name': checkData['retailPlace'].toString().split('"').length < 2 ? checkData['retailPlace'].toString() : checkData['retailPlace'].toString().split('"')[1],
+        'date': checkData['dateTime'].toString().split('T')[0],
         'user_id': _loggedInUserId,
       },
     );
 
     // Вставка данных товаров в чеке
-    List<dynamic> items = checkData['data']['json']['items'];
+    List<dynamic> items = checkData['predictions'];
     double totalSum = 0;
 
     for (var item in items) {
@@ -126,6 +126,7 @@ class DBProvider {
           'name': item['name'],
           'price': (item['price']).toDouble() / 100,
           'quantity': item['quantity'],
+          'category': item['category'],
         },
       );
       totalSum += ((item['price']).toDouble() / 100) * (item['quantity']).toDouble();
@@ -139,9 +140,13 @@ class DBProvider {
     );
   }
 
-  Future<List<CheckItem>> getCheck() async {
+  Future<List<CheckItem>> getCheck(int userId) async {
     Database db = await database;
-    List<Map<String, dynamic>> results = await db.query('checks');
+    List<Map<String, dynamic>> results = await db.query(
+      'checks',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
 
     List<CheckItem> checkItems = [];
 
@@ -152,7 +157,7 @@ class DBProvider {
 
       CheckItem checkItem = CheckItem(
         id: data['id'],
-        name: data['name'],
+        name: data['name'] ?? 'Ошибка',
         sum: data['sum'],
         user_id: data['user_id'],
         date: data['date'],
@@ -180,6 +185,7 @@ class DBProvider {
         name: data['name'],
         price: data['price'],
         quantity: data['quantity'],
+        category: data['category'] ?? "Ошибка",
       );
     }).toList();
 
@@ -222,35 +228,3 @@ class User {
     );
   }
 }
-
-// class Check {
-//   final int id;
-//   final String name;
-//   final double sum;
-//   final int user_id;
-//   final String date;
-//
-//   Check({
-//     required this.id,
-//     required this.name,
-//     required this.sum,
-//     required this.user_id,
-//     required this.date,
-//   });
-// }
-//
-// class CheckItem {
-//   final int id;
-//   final int checkId;
-//   final String name;
-//   final double price;
-//   final double quantity;
-//
-//   CheckItem({
-//     required this.id,
-//     required this.checkId,
-//     required this.name,
-//     required this.price,
-//     required this.quantity,
-//   });
-// }

@@ -3,36 +3,89 @@ import 'package:check_point/main.dart';
 import 'package:check_point/profile.dart';
 import 'package:check_point/check_model.dart';
 
-class AddPage extends StatefulWidget {
-  final String login;
+import 'dateBase.dart';
 
-  AddPage({required this.login});
+class AddPage extends StatefulWidget {
+  final User user;
+
+  AddPage({required this.user});
 
   @override
   _AddPageState createState() => _AddPageState();
 }
 
 class _AddPageState extends State<AddPage> {
-  final List<CategoryItem> categories = [
-    CategoryItem(icon: Icons.menu_book, name: 'Книги'),
-    CategoryItem(icon: Icons.bakery_dining_outlined, name: 'Выпечка'),
-    CategoryItem(icon: Icons.wine_bar_outlined, name: 'Алкоголь'),
-    CategoryItem(icon: Icons.home_repair_service, name: 'Товары для дома'),
-    CategoryItem(icon: Icons.electrical_services, name: 'Электроника'),
-    CategoryItem(icon: Icons.flatware, name: 'Кафе'),
-    CategoryItem(icon: Icons.pets, name: 'Животные'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    CategoryItem(icon: Icons.category, name: 'Категория 4'),
-    // Добавьте остальные категории
-  ];
+  double sumAll = 0;
+  Future<List<CategoryItem>> getCategoryPercentages() async {
+    // Получите все товары из базы данных
+    List<CheckItem> checks = await DBProvider.db.getCheck(widget.user.id);
+    List<ProductItem> products = [];
+    for (var check in checks) {
+      sumAll += check.sum;
+      products.addAll(check.products);
+    }
+    print(products);
+
+    // Вычислите общую сумму товаров
+    double totalSum = products.fold(0, (sum, product) => sum + product.price * product.quantity);
+
+    // Группируйте товары по категориям
+    Map<String, double> categorySums = {};
+
+    for (var product in products) {
+      String category = product.category ?? "Unknown"; // Значение по умолчанию, если category равно null
+
+      if (categorySums.containsKey(category)) {
+        categorySums[category] = (categorySums[category] ?? 0) + product.price * product.quantity; // Значение по умолчанию, если categorySums[category] равно null
+      } else {
+        categorySums[category] = product.price * product.quantity;
+      }
+    }
+
+    // Преобразуйте результаты в список объектов CategoryItem
+    List<CategoryItem> categoryItems = categorySums.entries.map((entry) {
+      double percentage = double.parse((entry.value / totalSum * 100).toStringAsFixed(2));
+      return CategoryItem(name: entry.key, procent: percentage, sum: double.parse(totalSum.toStringAsFixed(2)));
+    }).toList();
+
+    return categoryItems;
+  }
+
+  List<CategoryItem> categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _updateCategories();
+  }
+
+  Future<void> _updateCategories() async {
+    // Получите данные из метода getCategoryPercentages
+    List<CategoryItem> updatedCategories = await getCategoryPercentages();
+
+    // Обновите состояние виджета
+    setState(() {
+      categories = updatedCategories;
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    var devicedata = MediaQuery.of(context);
+    double heightt = MediaQuery.of(context).size.height;
+    double containerHeight;
+    if (devicedata.viewPadding.bottom > 0) {
+      // Кнопки управления есть, учтем их высоту
+      containerHeight = devicedata.size.height - devicedata.viewPadding.bottom;
+      print(containerHeight);
+      print(1);
+    } else {
+      // Кнопок управления нет, используем всю высоту экрана
+      containerHeight = devicedata.size.height;
+      print(containerHeight);
+      print(1);
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -65,7 +118,10 @@ class _AddPageState extends State<AddPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 80),
+            padding: const EdgeInsets.only(
+                top: 80,
+                bottom: 0
+            ),
             child: Column(
               children: [
                 Container(
@@ -80,7 +136,7 @@ class _AddPageState extends State<AddPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.user.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -88,7 +144,7 @@ class _AddPageState extends State<AddPage> {
                 SizedBox(height: 10),
                 Container(
                   width: 320,
-                  height: 646,
+                  height: containerHeight * 0.745713,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
@@ -97,7 +153,7 @@ class _AddPageState extends State<AddPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 20),
-                        Text('47 283,75', style: TextStyle(fontSize: 45)),
+                        Text('${sumAll.toStringAsFixed(2)}', style: TextStyle(fontSize: 45)),
                         // Разделительная линия
                         const ColoredBox(
                           color: Color.fromARGB(192, 192, 192, 192),
@@ -107,7 +163,7 @@ class _AddPageState extends State<AddPage> {
                           ),
                         ),
                         const Padding(
-                          padding: EdgeInsets.only(left: 18),
+                          padding: EdgeInsets.only(left: 17),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -142,9 +198,9 @@ class _AddPageState extends State<AddPage> {
                                 itemCount: categories.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
-                                      padding: EdgeInsets.only(left: 18),
-                                  child:
-                                  _buildCategoryItem(context, categories[index]),
+                                    padding: EdgeInsets.only(left: 18, right: 18),
+                                    child:
+                                    _buildCategoryItem(context, categories[index]),
                                   );
                                 },
                               ),
@@ -179,7 +235,7 @@ class _AddPageState extends State<AddPage> {
                       _buildBottomBarButton(Icons.home, 'Главная', (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => MainPage(login: widget.login,)),
+                          MaterialPageRoute(builder: (context) => MainPage(user: widget.user,)),
                         );
                       }),
                       _buildBottomBarButton(Icons.category, 'Категории', () {
@@ -188,7 +244,7 @@ class _AddPageState extends State<AddPage> {
                       _buildBottomBarButton(Icons.person, 'Профиль',() {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfilePage(login: widget.login)),
+                          MaterialPageRoute(builder: (context) => ProfilePage(user: widget.user)),
                         );
                       }),
                     ],
@@ -214,8 +270,8 @@ class _AddPageState extends State<AddPage> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: Container(
-                width: 400,
-                height: 600,
+                width: 300,
+                height: 200,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20.0),
@@ -227,29 +283,16 @@ class _AddPageState extends State<AddPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const ColoredBox(
-                      color: Color.fromARGB(192, 192, 192, 192),
-                      child: SizedBox(
-                        width: 500,
-                        height: 2,
-                      ),
-                    ),
                     // Блок с товарами
                     Expanded(
                       child: ListView.builder(
-                        itemCount: categories.length,
+                        itemCount: 1,
                         itemBuilder: (context, index) {
-                          return const Column(
+                          return Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 17.0),
-                              ),
-                              ColoredBox(
-                                color: Color.fromARGB(192, 192, 192, 192),
-                                child: SizedBox(
-                                  width: 500,
-                                  height: 2,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+                                child: Text('${categories[index].sum} ₽', style: TextStyle(fontSize: 25, color: Colors.black)),
                               ),
                             ],
                           );
@@ -258,8 +301,12 @@ class _AddPageState extends State<AddPage> {
                     ),
                     // Кнопки "Изменить" и "Назад"
                     Container(
-                      color: Colors.green[500], // Задаем цвет фона для контейнера с кнопкой "Назад"
-                      padding: EdgeInsets.symmetric(horizontal: 17.0),
+                      decoration: BoxDecoration(
+                        color: Colors.green[500],
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(15), bottomLeft: Radius.circular(15)),
+                      ),
+                      // Задаем цвет фона для контейнера с кнопкой "Назад"
+                      padding: EdgeInsets.symmetric(horizontal: 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -295,10 +342,26 @@ class _AddPageState extends State<AddPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Icon(category.icon),
-            SizedBox(width: 10),
             Text(category.name),
+            SizedBox(width: 20),
+            ColoredBox(
+              color: Colors.orange,
+              child: SizedBox(
+                width: category.procent * 1.5,
+                height: 5,
+              ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('${category.procent} %'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

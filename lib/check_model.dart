@@ -24,6 +24,7 @@ class ProductItem {
   final String name;
   final double price;
   final double quantity;
+  final String category;
 
   ProductItem({
     required this.id,
@@ -31,12 +32,15 @@ class ProductItem {
     required this.name,
     required this.price,
     required this.quantity,
+    required this.category,
   });
+
 }
 
 class CategoryItem{
   final String name;
-  final IconData icon;
+  final double sum;
+  final double procent;
 
-  CategoryItem({required this.name, required this.icon});
+  CategoryItem({required this.name, required this.procent, required this.sum});
 }

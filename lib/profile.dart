@@ -9,9 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String login;
+  final User user;
 
-  ProfilePage({required this.login});
+  ProfilePage({required this.user});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -88,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('БЕТА-ВЕРСИЯ', style: TextStyle(color: Colors.grey)),
-                        Text(widget.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(widget.user.login, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -186,13 +186,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       _buildBottomBarButton(Icons.home, 'Главная', () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => MainPage(login: widget.login)),
+                          MaterialPageRoute(builder: (context) => MainPage(user: widget.user)),
                         );
                       }),
                       _buildBottomBarButton(Icons.category, 'Категории', () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => AddPage(login: widget.login)),
+                          MaterialPageRoute(builder: (context) => AddPage(user: widget.user)),
                         );
                       }),
                       _buildBottomBarButton(Icons.person, 'Профиль', () {}),
