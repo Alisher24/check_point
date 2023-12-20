@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:check_point/dateBase.dart';
+import 'package:check_point/vxod.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override

@@ -8,6 +8,10 @@ import 'package:check_point/profile.dart';
 import 'package:path/path.dart';
 import 'dateBase.dart';
 
+import 'dart:async';
+
+import 'splash.dart'; // Импортируем новый файл
+
 void main() {
   runApp(const MyApp());
 }
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const SplashScreen(), // Используйте SplashScreen в качестве начального экрана
     );
   }
 }
