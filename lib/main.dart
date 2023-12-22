@@ -25,6 +25,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     fetchCheckItems();
   }
+
   Future<void> fetchCheckItems() async {
     // Получение данных из базы данных
     try {
@@ -249,7 +250,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 0),
-                          height: 330, // Установите фиксированную высоту списка
+                          height: 318, // Установите фиксированную высоту списка
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -338,14 +339,15 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     // Поверхностные данные
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildInfoText('${checkItem.date}'),
-                          _buildInfoText('${checkItem.name}'),
-                          _buildInfoText('${checkItem.sum}'),
-                        ],
+                      padding: EdgeInsets.only(left: 17, top: 10, bottom: 10),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildInfoText('${checkItem.date}'),
+                            _buildInfoText('${checkItem.name}'),
+                          ],
+                        ),
                       ),
                     ),
                     const ColoredBox(

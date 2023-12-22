@@ -67,6 +67,7 @@ class _AddPageState extends State<AddPage> {
     setState(() {
       categories = updatedCategories;
     });
+    categories.forEach((element) {print((element.sum * element.procent) / 100);});
   }
 
 
@@ -144,7 +145,7 @@ class _AddPageState extends State<AddPage> {
                 SizedBox(height: 10),
                 Container(
                   width: 320,
-                  height: containerHeight * 0.745713,
+                  height: 646,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
@@ -286,13 +287,13 @@ class _AddPageState extends State<AddPage> {
                     // Блок с товарами
                     Expanded(
                       child: ListView.builder(
-                        itemCount: 1,
+                        // itemCount: 1,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
-                                child: Text('${categories[index].sum} ₽', style: TextStyle(fontSize: 25, color: Colors.black)),
+                                child: Text('${((category.sum * category.procent) / 100).toStringAsFixed(2)} ₽', style: TextStyle(fontSize: 25, color: Colors.black)),
                               ),
                             ],
                           );
@@ -341,30 +342,43 @@ class _AddPageState extends State<AddPage> {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
+        child:
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(category.name),
-            SizedBox(width: 20),
-            ColoredBox(
-              color: Colors.orange,
-              child: SizedBox(
-                width: category.procent * 1.5,
-                height: 5,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(category.name),
+                SizedBox(width: 20),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('${category.procent} %'),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text('${category.procent} %'),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ColoredBox(
+                  color: Colors.orange,
+                  child: SizedBox(
+                    width: category.procent * 2,
+                    height: 5,
+                  ),
+                ),
+                // Text('${((category.sum * categories[index].procent) / 100).toStringAsFixed(2)} ₽'),
+              ],
             ),
-          ],
+          ]
         ),
       ),
+
     );
   }
 
